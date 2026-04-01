@@ -1,5 +1,6 @@
 ﻿using EsemkaVote.API.Model.DTO;
 using EsemkaVote.API.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace EsemkaVote.API.Controllers
         }
 
         [HttpGet("GetAllEvents")]
+        [Authorize]
         public async Task<ActionResult<List<VotingHeaderResponse>>> GetAllEvents()
         {
             var events = await service.GetAllVoteEvents();

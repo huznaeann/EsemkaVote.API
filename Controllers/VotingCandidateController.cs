@@ -1,6 +1,7 @@
 ﻿using EsemkaVote.API.Model;
 using EsemkaVote.API.Model.DTO;
 using EsemkaVote.API.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace EsemkaVote.API.Controllers
         }
 
         [HttpGet("GetAllCandidate/{eventId}")]
+        [Authorize]
         public async Task<ActionResult<List<CandidatesResponse>>> GetAllCandidates(int eventId)
         {
             var candidates = await service.GetAllCandidatesAsync(eventId);
@@ -29,6 +31,7 @@ namespace EsemkaVote.API.Controllers
         }
 
         [HttpPost("VoteCandidate")]
+        [Authorize]
         public async Task<ActionResult<VotingDetail>> VoteCandidate(VoteCandidateRequest request)
         {
             if (!ModelState.IsValid)

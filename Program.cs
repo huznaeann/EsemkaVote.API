@@ -1,6 +1,9 @@
 using EsemkaVote.API.Data;
 using EsemkaVote.API.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,20 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IVotingHeaderService, VotingHeaderService>();
 builder.Services.AddScoped<IVotingCandidateService, VotingCandidateService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration.GetValue<string>("Jwt:Issuer"),
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration.GetValue<string>("Jwt:Audience"),
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("Jwt:Key")!))
+        };
+    });
 
 var app = builder.Build();
 

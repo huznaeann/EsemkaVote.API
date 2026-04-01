@@ -1,6 +1,5 @@
 ﻿using EsemkaVote.API.Model.DTO;
 using EsemkaVote.API.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EsemkaVote.API.Controllers
@@ -32,7 +31,7 @@ namespace EsemkaVote.API.Controllers
             return Ok(new
             {
                 message = "Login Success",
-                Data = response
+                data = response
             });
         }
     }
