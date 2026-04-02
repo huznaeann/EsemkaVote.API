@@ -6,7 +6,7 @@ namespace EsemkaVote.API.Repository
 {
     public interface IVotingCandidateService
     {
-        Task<VotingDetail> VoteCandidateAsync(VoteCandidateRequest request);
+        Task<VotingDetail?> VoteCandidateAsync(VoteCandidateRequest request);
         Task<List<CandidatesResponse>> GetAllCandidatesAsync(int votingHeaderId); 
     }
 }

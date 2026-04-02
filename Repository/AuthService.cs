@@ -11,6 +11,25 @@ namespace EsemkaVote.API.Repository
 {
     public class AuthService(EsemkaVoteAPIDataContext db, IConfiguration configuration) : IAuthService
     {
+        public async Task<EmployeeDTO?> GetMeAsync(int id)
+        {
+            var findUser = await db.Employees.Where(e => e.id == id).FirstOrDefaultAsync();
+            if (findUser == null)
+            {
+                return null;
+            }
+
+            return new EmployeeDTO
+            {
+                id = findUser.id,
+                name = findUser.name,
+                email = findUser.email,
+                photo = findUser.photo,
+                division = findUser.division
+            };
+
+        }
+
         public async Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO loginRequestDTO)
         {
             var user = await db.Employees.FirstOrDefaultAsync(u => u.email == loginRequestDTO.email && u.password == loginRequestDTO.password);
@@ -36,7 +55,7 @@ namespace EsemkaVote.API.Repository
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("Jwt:Key")!));
 
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.Sha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new JwtSecurityToken(
                     issuer: configuration.GetValue<string>("Jwt:Issuer"),

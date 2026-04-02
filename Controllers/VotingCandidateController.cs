@@ -18,7 +18,7 @@ namespace EsemkaVote.API.Controllers
             this.service = service;
         }
 
-        [HttpGet("GetAllCandidate/{eventId}")]
+        [HttpGet("{eventId}")]
         [Authorize]
         public async Task<ActionResult<List<CandidatesResponse>>> GetAllCandidates(int eventId)
         {
@@ -30,25 +30,25 @@ namespace EsemkaVote.API.Controllers
             });
         }
 
-        [HttpPost("VoteCandidate")]
+        [HttpPost]
         [Authorize]
-        public async Task<ActionResult<VotingDetail>> VoteCandidate(VoteCandidateRequest request)
+        public async Task<ActionResult<VotingDetail?>> VoteCandidate(VoteCandidateRequest request)
         {
-            if (!ModelState.IsValid)
+            var vote = await service.VoteCandidateAsync(request);
+
+            if (vote == null)
             {
-                return BadRequest(new
+                return NotFound(new
                 {
-                    message = "Bad Request",
-                    data = ""
+                    message = "Candidate or employee is not found",
+                    data = vote
                 });
             }
-
-            var vote = await service.VoteCandidateAsync(request);
 
             return Ok(new
             {
                 message = "Vote Successfull",
-                data = vote
+                data = ""
             });
         }
     }

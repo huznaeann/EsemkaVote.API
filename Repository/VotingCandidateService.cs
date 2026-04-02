@@ -23,8 +23,16 @@ namespace EsemkaVote.API.Repository
             return candidates;
         }
 
-        public async Task<VotingDetail> VoteCandidateAsync(VoteCandidateRequest request)
+        public async Task<VotingDetail?> VoteCandidateAsync(VoteCandidateRequest request)
         {
+            var findEmployee = await db.Employees.AnyAsync(e => e.id == request.employeeId);
+            var findCandidate = await db.VotingCandidates.AnyAsync(c => c.id == request.candidateId);
+
+            if (!findEmployee || !findCandidate)
+            {
+                return null;
+            }
+
             var newVote = new VotingDetail
             {
                 votingCandidateId = request.candidateId,

@@ -1,6 +1,8 @@
 ﻿using EsemkaVote.API.Model.DTO;
 using EsemkaVote.API.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EsemkaVote.API.Controllers
 {
@@ -23,7 +25,7 @@ namespace EsemkaVote.API.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Data not found",
+                    message = "email or password is wrong",
                     data = ""
                 });
             }
@@ -32,6 +34,30 @@ namespace EsemkaVote.API.Controllers
             {
                 message = "Login Success",
                 data = response
+            });
+        }
+
+        [HttpGet("Me")]
+        [Authorize]
+        public async Task<ActionResult> GetMe()
+        {
+            int employeeId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+            var findEmployee = await service.GetMeAsync(employeeId);
+
+            if (findEmployee != null)
+            {
+                return Ok(new
+                {
+                    message = "success",
+                    data = findEmployee
+                });
+            }
+
+            return Unauthorized(new
+            {
+                message = "Please login first",
+                data = ""
             });
         }
     }

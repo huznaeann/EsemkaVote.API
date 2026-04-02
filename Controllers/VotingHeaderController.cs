@@ -17,7 +17,7 @@ namespace EsemkaVote.API.Controllers
             this.service = service;
         }
 
-        [HttpGet("GetAllEvents")]
+        [HttpGet]
         [Authorize]
         public async Task<ActionResult<List<VotingHeaderResponse>>> GetAllEvents()
         {
